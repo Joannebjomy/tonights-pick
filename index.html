@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tonight's Pick</title>
+  <meta name="description" content="A group movie-night picker for Netflix: everyone votes in secret and the app picks the film nobody minds. Case study and working prototype by Joanne.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Jost:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="#top">Tonight's <span>Pick</span></a>
+  <nav aria-label="Sections">
+    <a href="#problem">Problem</a>
+    <a href="#solution">Solution</a>
+    <a href="#visuals">Design</a>
+    <a href="#build">Build</a>
+    <a href="#app-frame">Prototype</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ============ Hero ============ -->
+  <section class="hero">
+    <div class="fairy-lights" aria-hidden="true"></div>
+    <p class="kicker">Improve It! · a concept feature for Netflix</p>
+    <h1><span class="h1-serif">Tonight's</span><span class="h1-script">Pick</span></h1>
+    <p class="tagline">FRIENDS. <em>popcorn.</em> ONE PICK.</p>
+    <div class="divider" aria-hidden="true"><span>♥</span></div>
+    <p class="pitch">Movie night shouldn't start with forty minutes of scrolling. Everyone votes in secret, and Netflix picks the film nobody minds.</p>
+    <a class="btn" href="#app-frame">Try the prototype</a>
+  </section>
+
+  <!-- ============ The prototype: a streaming app ============ -->
+  <section class="proto" aria-labelledby="proto-title">
+    <h2 class="sr" id="proto-title">Working prototype</h2>
+    <div class="tv" id="app-frame">
+      <div class="app" id="app">
+
+        <aside class="side">
+          <p class="logo">Tonight's <span>Pick</span></p>
+          <nav class="side-nav" aria-label="App">
+            <button class="side-link is-active" data-go="home"><span class="ico" aria-hidden="true">⌂</span>Home</button>
+            <button class="side-link" data-go="setup"><span class="ico" aria-hidden="true">✦</span>Movie night</button>
+          </nav>
+          <div class="side-guests">
+            <p class="side-label">Watching tonight</p>
+            <ul id="side-guests"></ul>
+          </div>
+          <div class="side-plan">
+            <p class="side-label">Tonight's plan</p>
+            <ul>
+              <li>Movie: <span id="plan-movie"></span></li>
+              <li>Snacks</li>
+              <li>Blanket</li>
+              <li>Do not disturb</li>
+            </ul>
+          </div>
+        </aside>
+
+        <div class="main">
+
+          <!-- home -->
+          <section class="view" id="v-home" aria-labelledby="home-title">
+            <div class="banner">
+              <div class="banner-art" id="banner-art" aria-hidden="true"></div>
+              <div class="banner-text">
+                <p class="chip-tag">✦ New: group mode</p>
+                <h3 id="home-title">Watching with friends tonight?</h3>
+                <p>Everyone votes in secret, and we'll pick the film nobody minds. It takes about two minutes.</p>
+                <button class="btn" data-go="setup">Start a movie night</button>
+              </div>
+            </div>
+            <div class="row-head"><h4>Trending near you</h4><span class="muted">Vellore</span></div>
+            <div class="row" id="row-trending"></div>
+          </section>
+
+          <!-- setup -->
+          <section class="view" id="v-setup" hidden aria-labelledby="setup-title">
+            <h3 class="view-title" id="setup-title">Who's watching tonight?</h3>
+            <p class="muted setup-hint">Tap a creature to choose your profile picture.</p>
+            <div class="tickets" id="tickets"></div>
+            <form class="add-ticket" id="add-ticket">
+              <label class="sr" for="new-name">Add a friend</label>
+              <input id="new-name" type="text" placeholder="Add a friend's name" maxlength="14" autocomplete="off">
+              <button type="submit">+ Add ticket</button>
+            </form>
+
+            <div class="filters">
+              <div>
+                <h4 class="f-title" id="time-title">How much time do you have?</h4>
+                <div class="pills" role="radiogroup" aria-labelledby="time-title">
+                  <label><input type="radio" name="time" value="120"><span>Under 2 h</span></label>
+                  <label><input type="radio" name="time" value="150" checked><span>Up to 2½ h</span></label>
+                  <label><input type="radio" name="time" value="999"><span>No limit</span></label>
+                </div>
+              </div>
+              <div>
+                <h4 class="f-title" id="lang-title">Languages</h4>
+                <div class="pills" id="langs" role="group" aria-labelledby="lang-title"></div>
+              </div>
+              <div class="f-wide">
+                <h4 class="f-title" id="mood-title">What's the mood? <small>pick any</small></h4>
+                <div class="pills" id="moods" role="group" aria-labelledby="mood-title"></div>
+              </div>
+            </div>
+
+            <div class="setup-foot">
+              <label class="check">
+                <input type="checkbox" id="demo-friends" checked>
+                <span>Fill in my friends' votes for me (demo)</span>
+              </label>
+              <button class="btn" id="build-list">Build our shortlist</button>
+            </div>
+          </section>
+
+          <!-- profile picture picker -->
+          <div class="picker" id="picker" hidden>
+            <div class="picker-box" role="dialog" aria-modal="true" aria-labelledby="picker-title">
+              <button class="picker-close" id="picker-close" aria-label="Close">×</button>
+              <p class="chip-tag">✦ Choose a profile picture</p>
+              <h3 id="picker-title" class="view-title">Pick a movie buddy</h3>
+              <div class="picker-grid" id="picker-grid"></div>
+            </div>
+          </div>
+
+          <!-- hand-off -->
+          <section class="view view-center" id="v-handoff" hidden aria-labelledby="handoff-title">
+            <div class="handoff-pfp" id="handoff-pfp"></div>
+            <div class="big-ticket" aria-hidden="true">
+              <span class="bt-top">Tonight's Pick · Movie night</span>
+              <span class="bt-main">ADMIT ONE</span>
+              <span class="bt-name" id="handoff-name"></span>
+              <span class="barcode"></span>
+            </div>
+            <h3 id="handoff-title" class="view-title"></h3>
+            <p class="muted" id="handoff-note">Your votes stay secret until everyone's done.</p>
+            <button class="btn" id="start-turn"></button>
+          </section>
+
+          <!-- voting -->
+          <section class="view" id="v-vote" hidden aria-labelledby="vote-title">
+            <div class="vote-head">
+              <h3 class="sr" id="vote-title">Vote on the shortlist</h3>
+              <p><span class="mini-ticket" id="vote-who"></span> is voting</p>
+              <p class="muted" id="vote-count"></p>
+            </div>
+            <div class="feature" id="card" tabindex="0" aria-live="polite"></div>
+            <div class="vote-buttons">
+              <button class="vote no" data-vote="0"><span aria-hidden="true">✕</span>Not tonight</button>
+              <button class="vote maybe" data-vote="1"><span aria-hidden="true">~</span>Maybe</button>
+              <button class="vote yes" data-vote="2"><span aria-hidden="true">♥</span>Yes!</button>
+            </div>
+            <p class="muted tiny">Swipe the film right for yes and left for no, or use the arrow keys.</p>
+            <div class="row-head"><h4>Tonight's shortlist</h4><span class="muted" id="shortlist-note"></span></div>
+            <div class="row row-small" id="row-shortlist"></div>
+          </section>
+
+          <!-- result -->
+          <section class="view" id="v-result" hidden aria-labelledby="result-title">
+            <div class="banner banner-win">
+              <div class="banner-art" id="win-art" aria-hidden="true"></div>
+              <div class="banner-text">
+                <p class="chip-tag">✦ Tonight's pick</p>
+                <h3 id="result-title"></h3>
+                <p class="win-meta" id="win-meta"></p>
+                <p class="reason" id="reason"></p>
+                <div class="win-actions">
+                  <button class="btn" id="play">▶ Play</button>
+                  <button class="btn-ghost" id="revote">Vote again on the top 3</button>
+                  <button class="btn-ghost" id="restart">Start over</button>
+                </div>
+                <p class="toast" id="toast" role="status" hidden></p>
+              </div>
+            </div>
+            <div class="row-head"><h4>How everyone voted</h4><span class="muted">top 5</span></div>
+            <div class="table-scroll"><table class="votes" id="votes"></table></div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+    <p class="proto-caption">Working prototype on one screen. In the real feature, everyone joins and votes from their own phone.</p>
+  </section>
+
+  <!-- ============ Scene 1 ============ -->
+  <section class="section" id="problem">
+    <div class="slate" aria-hidden="true"><span class="slate-top"></span><span class="slate-label">Scene</span><span class="slate-num">1</span></div>
+    <div class="sec-body">
+      <h2>Product &amp; problem</h2>
+      <p class="lead"><b>Netflix</b> is great at recommending films to <em>one</em> person. Movie night is rarely one person.</p>
+      <p>Every movie night with friends starts the same way: someone opens Netflix, everyone scrolls, nobody wants to be the one who picks, and half an hour later you're watching something only one person really wanted.</p>
+      <div class="pains">
+        <article>
+          <h3>Endless scrolling</h3>
+          <p>Recommendations are built for one profile. A group has to scroll and negotiate, film by film, out loud.</p>
+        </article>
+        <article>
+          <h3>The loudest voice wins</h3>
+          <p>People go along with the first confident suggestion. The quiet friend who hates horror sits through it anyway.</p>
+        </article>
+        <article>
+          <h3>No help choosing together</h3>
+          <p>Netflix recommends for one profile at a time, and watch-party tools sync playback, but nothing helps a group <em>decide</em>.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Scene 2 ============ -->
+  <section class="section" id="solution">
+    <div class="slate" aria-hidden="true"><span class="slate-top"></span><span class="slate-label">Scene</span><span class="slate-num">2</span></div>
+    <div class="sec-body">
+      <h2>My solution: <em class="script">Tonight's Pick</em></h2>
+      <p class="lead">A group mode for Netflix that turns "what should we watch?" into a two-minute vote.</p>
+      <ol class="how">
+        <li>
+          <h3>Start a movie night</h3>
+          <p>The host taps <b>Movie night</b> on the TV. Friends scan a QR code to join on their own phones. No account sharing needed.</p>
+        </li>
+        <li>
+          <h3>Set the ground rules</h3>
+          <p>How much time you have, the mood and the languages everyone understands. Netflix builds a shortlist of 8, skipping anything someone in the group has already seen.</p>
+        </li>
+        <li>
+          <h3>Vote in secret</h3>
+          <p>Everyone swipes on the same shortlist: <b>Yes</b>, <b>Maybe</b> or <b>Not tonight</b>. Nobody sees anyone else's votes until the end.</p>
+        </li>
+        <li>
+          <h3>Get a fair pick</h3>
+          <p>The app picks the film whose <em>least happy</em> person is happiest. Then it explains why, and the TV starts playing.</p>
+        </li>
+      </ol>
+
+      <div class="rule">
+        <h3>The fairness rule</h3>
+        <p>Most voting apps pick the film with the most likes, even if one friend would hate it. Tonight's Pick uses a <b>"least misery"</b> rule from group-recommendation research instead:</p>
+        <ol>
+          <li>Prefer films where nobody said <b>Not tonight</b>.</li>
+          <li>Among those, prefer the most <b>Yes</b> votes.</li>
+          <li>Still tied? Pick the shorter film, because it's a school night.</li>
+        </ol>
+        <p class="example">A film with three yes votes and one "not tonight" loses to a film with two yes and two maybe. Nobody spends the evening miserable.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Scene 3 ============ -->
+  <section class="section" id="visuals">
+    <div class="slate" aria-hidden="true"><span class="slate-top"></span><span class="slate-label">Scene</span><span class="slate-num">3</span></div>
+    <div class="sec-body">
+      <h2>Visual design</h2>
+      <p class="lead">The flow from "let's watch something" to the film playing, and the screens along the way. The prototype above is the high-fidelity version.</p>
+
+      <h3 class="sub">User flow</h3>
+      <figure class="diagram">
+        <svg viewBox="0 0 960 300" role="img" aria-labelledby="flow-t">
+          <title id="flow-t">Flowchart: host starts movie night on the TV, friends join by QR code, the group sets filters, Netflix builds a shortlist, everyone votes in secret, then the least-misery rule picks a film. If every film got a "not tonight", the group picks the most wanted or votes again on the top three.</title>
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head"/></marker></defs>
+          <rect class="d-node d-start" x="10" y="40" width="140" height="66" rx="33"/>
+          <text class="d-t" x="80" y="68" text-anchor="middle">Host starts</text><text class="d-s" x="80" y="88" text-anchor="middle">movie night on TV</text>
+          <rect class="d-node" x="190" y="40" width="140" height="66" rx="10"/>
+          <text class="d-t" x="260" y="68" text-anchor="middle">Friends join</text><text class="d-s" x="260" y="88" text-anchor="middle">scan the QR code</text>
+          <rect class="d-node" x="370" y="40" width="150" height="66" rx="10"/>
+          <text class="d-t" x="445" y="68" text-anchor="middle">Set filters</text><text class="d-s" x="445" y="88" text-anchor="middle">time · mood · language</text>
+          <rect class="d-node" x="560" y="40" width="160" height="66" rx="10"/>
+          <text class="d-t" x="640" y="68" text-anchor="middle">Shortlist of 8</text><text class="d-s" x="640" y="88" text-anchor="middle">nobody's seen these</text>
+          <rect class="d-node" x="760" y="40" width="180" height="66" rx="10"/>
+          <text class="d-t" x="850" y="68" text-anchor="middle">Secret votes</text><text class="d-s" x="850" y="88" text-anchor="middle">yes · maybe · not tonight</text>
+          <polygon class="d-node d-decide" points="850,150 950,205 850,260 750,205"/>
+          <text class="d-t" x="850" y="200" text-anchor="middle">A film with no</text><text class="d-t" x="850" y="218" text-anchor="middle">"not tonight"?</text>
+          <rect class="d-node d-accent" x="430" y="172" width="200" height="66" rx="10"/>
+          <text class="d-t" x="530" y="200" text-anchor="middle">Play tonight's pick</text><text class="d-s" x="530" y="220" text-anchor="middle">with the reason shown</text>
+          <rect class="d-node" x="120" y="172" width="220" height="66" rx="10"/>
+          <text class="d-t" x="230" y="200" text-anchor="middle">Pick the most wanted</text><text class="d-s" x="230" y="220" text-anchor="middle">or vote again on top 3</text>
+          <path class="d-e" d="M150 73H188" marker-end="url(#ah)"/>
+          <path class="d-e" d="M330 73H368" marker-end="url(#ah)"/>
+          <path class="d-e" d="M520 73H558" marker-end="url(#ah)"/>
+          <path class="d-e" d="M720 73H758" marker-end="url(#ah)"/>
+          <path class="d-e" d="M850 106V148" marker-end="url(#ah)"/>
+          <path class="d-e" d="M750 205H632" marker-end="url(#ah)"/>
+          <text class="d-s" x="690" y="196" text-anchor="middle">yes</text>
+          <path class="d-e" d="M850 260V285H230V240" marker-end="url(#ah)"/>
+          <text class="d-s" x="540" y="280" text-anchor="middle">no</text>
+          <path class="d-e d-dash" d="M340 205H428" marker-end="url(#ah)"/>
+        </svg>
+      </figure>
+
+      <h3 class="sub">Wireframes</h3>
+      <div class="wireframes">
+        <figure class="wf">
+          <div class="wf-tv">
+            <div class="wf-side"><i></i><i></i><i></i></div>
+            <div class="wf-main"><div class="wf-banner"><b>Watching with friends?</b><span class="wf-btn">Start a movie night</span></div><div class="wf-row"><i></i><i></i><i></i><i></i><i></i></div></div>
+          </div>
+          <figcaption><b>Home.</b> A banner offers group mode.</figcaption>
+        </figure>
+        <figure class="wf">
+          <div class="wf-tv">
+            <div class="wf-side"><i></i><i></i><i></i></div>
+            <div class="wf-main"><b>Who's watching?</b><div class="wf-tix"><i></i><i></i><i></i></div><div class="wf-pills"><i></i><i></i><i></i><i></i></div><span class="wf-btn wf-end">Build shortlist</span></div>
+          </div>
+          <figcaption><b>Setup.</b> One ticket per guest, then filters.</figcaption>
+        </figure>
+        <figure class="wf">
+          <div class="wf-tv">
+            <div class="wf-side"><i></i><i></i><i></i></div>
+            <div class="wf-main"><div class="wf-feature"><i class="p"></i><div><i></i><i class="s"></i></div></div><div class="wf-votes"><i>✕</i><i>~</i><i>♥</i></div><div class="wf-row sm"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+          </div>
+          <figcaption><b>Vote.</b> One film at a time, in secret.</figcaption>
+        </figure>
+        <figure class="wf">
+          <div class="wf-tv">
+            <div class="wf-side"><i></i><i></i><i></i></div>
+            <div class="wf-main"><div class="wf-banner win"><b>Tonight's pick</b><span class="wf-btn">▶ Play</span></div><div class="wf-grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+          </div>
+          <figcaption><b>Result.</b> The pick, the reason and the votes.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Scene 4 ============ -->
+  <section class="section" id="build">
+    <div class="slate" aria-hidden="true"><span class="slate-top"></span><span class="slate-label">Scene</span><span class="slate-num">4</span></div>
+    <div class="sec-body">
+      <h2>How I'd build it</h2>
+      <p class="lead">A live "session" connects the TV and everyone's phones. Votes travel through it in real time.</p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 960 260" role="img" aria-labelledby="arch-t">
+          <title id="arch-t">Architecture: the TV app and phones connect to a session service over WebSockets. The session service asks a shortlist service for films that suit the group, stores votes in Redis, and runs the fairness rule to send the pick back to the TV.</title>
+          <rect class="d-node" x="20" y="30" width="170" height="70" rx="10"/>
+          <text class="d-t" x="105" y="60" text-anchor="middle">Netflix TV app</text><text class="d-s" x="105" y="80" text-anchor="middle">starts session, shows QR</text>
+          <rect class="d-node" x="20" y="160" width="170" height="70" rx="10"/>
+          <text class="d-t" x="105" y="190" text-anchor="middle">Friends' phones</text><text class="d-s" x="105" y="210" text-anchor="middle">join, filter, vote</text>
+          <rect class="d-node d-accent" x="320" y="90" width="210" height="80" rx="10"/>
+          <text class="d-t" x="425" y="122" text-anchor="middle">Session service</text><text class="d-s" x="425" y="142" text-anchor="middle">Node.js + Socket.IO</text>
+          <rect class="d-node" x="650" y="20" width="290" height="70" rx="10"/>
+          <text class="d-t" x="795" y="50" text-anchor="middle">Shortlist service</text><text class="d-s" x="795" y="70" text-anchor="middle">group filters + unwatched by all</text>
+          <rect class="d-node" x="650" y="105" width="290" height="60" rx="10"/>
+          <text class="d-t" x="795" y="132" text-anchor="middle">Redis</text><text class="d-s" x="795" y="150" text-anchor="middle">live votes, expire after the night</text>
+          <rect class="d-node" x="650" y="180" width="290" height="60" rx="10"/>
+          <text class="d-t" x="795" y="207" text-anchor="middle">Fairness rule</text><text class="d-s" x="795" y="225" text-anchor="middle">least misery → pick + reason</text>
+          <path class="d-e" d="M190 65H250V120H318" marker-end="url(#ah)" marker-start="url(#ah)"/>
+          <path class="d-e" d="M190 195H250V140H318" marker-end="url(#ah)" marker-start="url(#ah)"/>
+          <text class="d-s" x="258" y="58" text-anchor="start">WebSockets</text>
+          <path class="d-e" d="M530 110H590V55H648" marker-end="url(#ah)"/>
+          <path class="d-e" d="M530 130H648" marker-end="url(#ah)"/>
+          <path class="d-e" d="M530 150H590V210H648" marker-end="url(#ah)"/>
+        </svg>
+      </figure>
+
+      <div class="build-grid">
+        <div>
+          <h3>Steps</h3>
+          <ol class="steps">
+            <li><b>Sessions.</b> The TV app creates a movie-night session with a short code and QR. Phones join it through a web page, so friends don't need the Netflix app.</li>
+            <li><b>Shortlist.</b> A service combines everyone's profiles: it drops anything someone has already watched, applies the time, mood and language filters, and ranks what's left.</li>
+            <li><b>Live voting.</b> Votes are sent over WebSockets and kept in Redis, hidden from other people until everyone's done.</li>
+            <li><b>Fair pick.</b> The least-misery rule picks the film and writes a one-line reason. The TV shows it and starts playing.</li>
+            <li><b>Learn.</b> After the film, a quick thumbs up or down helps the shortlist get better for that group next time.</li>
+          </ol>
+        </div>
+        <div>
+          <h3>Tools</h3>
+          <dl class="stack">
+            <div><dt>Phones</dt><dd>React web app (no install)</dd></div>
+            <div><dt>TV</dt><dd>Netflix TV app screen</dd></div>
+            <div><dt>Real time</dt><dd>Node.js, Socket.IO, Redis</dd></div>
+            <div><dt>Shortlist</dt><dd>Netflix's own recommendation data</dd></div>
+            <div><dt>This prototype</dt><dd>HTML, CSS, vanilla JavaScript, on GitHub Pages</dd></div>
+          </dl>
+          <h3>How I'd measure it</h3>
+          <ul class="metrics">
+            <li>Time from opening Netflix to pressing play</li>
+            <li>How many movie nights end with a film playing</li>
+            <li>Thumbs up from everyone after the film</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Scene 5 ============ -->
+  <section class="section" id="proto">
+    <div class="slate" aria-hidden="true"><span class="slate-top"></span><span class="slate-label">Scene</span><span class="slate-num">5</span></div>
+    <div class="sec-body">
+      <h2>Working prototype</h2>
+      <p class="lead">The streaming app at the top of this page works end to end, with a sample of 30 films: Marvel, Disney and Pixar, Malayalam favourites, and films in Hindi, Tamil, Telugu, Kannada and Marathi.</p>
+      <ul class="notes">
+        <li><b>Demo friends:</b> with the box ticked, only you vote. Your friends' votes come from their tastes, for example Riya loves comedies and avoids sad films.</li>
+        <li><b>Pass the phone:</b> untick the box and every guest votes in turn, with an "admit one" ticket screen in between so votes stay secret.</li>
+        <li><b>Try the fairness rule:</b> say <b>Not tonight</b> to a film everyone else loves, and watch it lose.</li>
+        <li><b>Profile pictures:</b> tap a guest's creature on their ticket to choose from nine movie buddies, from Moonshroom to Kernel the popcorn bucket.</li>
+        <li><b>Posters and creatures:</b> drawn by the page itself as SVG, because real film posters are copyrighted.</li>
+        <li><b>Not built yet:</b> separate phones joining live, and real Netflix data. Those are the backend steps in Scene 4.</li>
+      </ul>
+      <a class="btn" href="#app-frame">Back to the prototype</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p class="footer-script">dim the lights, pass the popcorn</p>
+  <p>Made by <b>Joanne</b> for the IEEE WIE Technical Domain · <a href="https://joannebjomy.github.io" target="_blank" rel="noopener">My portfolio</a> · <a href="https://github.com/Joannebjomy" target="_blank" rel="noopener">GitHub</a></p>
+  <p class="disclaimer">A student concept. Not made by or affiliated with Netflix. Film titles are used only as sample data; descriptions are my own.</p>
+</footer>
+
+<script src="movies.js"></script>
+<script src="avatars.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
